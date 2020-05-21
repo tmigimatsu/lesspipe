@@ -3258,7 +3258,14 @@ getopts('i:l:') || exit 2;
     if ($ENV{LESSCOLORIZER} eq 'pygmentize') {
       # do not call pygmentize with - and use option -g
       @ARGV = grep {$_ ne '-'} @ARGV;
-      unshift @ARGV, '-g';
+      my ($name,$path,$ext) = fileparse(@ARGV[0],qr/\.[^.\s\W]{0,5}/);
+      if ($ext eq '.txt') {
+        exit;
+      }
+      # unshift @ARGV, '-g';
+      @ARGV_MONOKAI = ('-g', '-f', 'terminal256', '-P', 'style=monokai');
+      push @ARGV_MONOKAI, @ARGV;
+      @ARGV = @ARGV_MONOKAI;
     }
     system($ENV{LESSCOLORIZER}, @ARGV);
     exit;
